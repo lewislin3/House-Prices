@@ -189,6 +189,52 @@ print("誤差10000以內=" ,count_10000/target.shape[0])
 
 #calculate accuracy
 ###############################################
+dtc= tree.DecisionTreeClassifier()
+
+kf2= KFold(n_splits=10, shuffle=True)
+normal= []
+
+for train, test in kf2.split(data[:,0:79], target):
+    train_time = timer()
+    r=dtc.fit(data[train], target1[train])
+    train_time = timer()-train_time
+    test_time = timer()
+    pred = dtc.predict(data[test])
+    test_time = timer()-test_time
+    testtime=testtime+test_time
+    traintime=traintime+train_time
+    #print(pred)
+    #print(target[test])
+    for j in range(0,pred.shape[0]) :
+        if pred[j]==target[test][j] :
+            count_0=count_0+1
+        if abs(pred[j]-target[test][j])<=1000:
+            count_1000=count_1000+1
+        if abs(pred[j]-target[test][j])<=2000:
+            count_2000=count_2000+1
+        if abs(pred[j]-target[test][j])<=5000:
+            count_5000=count_5000+1
+        if abs(pred[j]-target[test][j])<=100000:
+            count_10000=count_10000+1
+#    print("Train elapsed time =", train_time)
+#    print("Test elapsed time =", test_time)
+
+
+#print("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")
+cnf= confusion_matrix(target[test], pred)
+#print(cnf)
+#print predict target and confusion matrix
+###############################################
+
+print("|||||||||||||||||||||||||||")
+print("\n decision tree (no pre-pruning depth)")
+print("train 時間" ,traintime/10)
+print("test 時間" ,testtime/10)
+print("完全命中=" ,count_0/target.shape[0])
+print("誤差1000以內=" ,count_1000/target.shape[0])
+print("誤差2000以內=" ,count_2000/target.shape[0])
+print("誤差5000以內=" ,count_5000/target.shape[0])
+print("誤差10000以內=" ,count_10000/target.shape[0])
 
 
 
