@@ -1,10 +1,8 @@
 import numpy as np
 import pandas as pd
 import csv
-from sklearn.metrics.pairwise import manhattan_distances
-from sklearn.neighbors import KDTree
+from sklearn.ensemble import RandomForestClassifier
 from sklearn import tree
-from sklearn.neighbors.classification import KNeighborsClassifier
 from timeit import default_timer as timer
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import KFold
@@ -81,19 +79,18 @@ print(target1)
 print(target2)
 '''
 
-dtc= tree.DecisionTreeClassifier(max_depth=10)
 
-kf2= KFold(n_splits=10, shuffle=True)
-normal= []
-#set 5-fold cross validation
-###############################################
 
-for train, test in kf2.split(data[:,0:79], target):
+
+clf = RandomForestClassifier()
+kf = KFold(n_splits=10, shuffle=True)
+
+for train, test in kf.split(data, target1):
     train_time = timer()
-    r=dtc.fit(data[train], target1[train])
+    r=clf.fit(data[train], target1[train])
     train_time = timer()-train_time
     test_time = timer()
-    pred = dtc.predict(data[test])
+    pred = clf.predict(data[test])
     test_time = timer()-test_time
     testtime=testtime+test_time
     traintime=traintime+train_time
@@ -112,15 +109,12 @@ for train, test in kf2.split(data[:,0:79], target):
             count_10000=count_10000+1
 #    print("Train elapsed time =", train_time)
 #    print("Test elapsed time =", test_time)
-
 #    print("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")
-    cnf= confusion_matrix(target[test], pred)
-    #print(cnf)
-#print predict target and confusion matrix
-###############################################
+    cnf_matrix = confusion_matrix(target1[test], pred)
+    #print(cnf_matrix)
 
 print("|||||||||||||||||||||||||||")
-print("\n decision tree (pre-pruning depth<10)")
+print("\SVM linear \n")
 print("train 時間" ,traintime/10)
 print("test 時間" ,testtime/10)
 print("完全命中=" ,count_0/target.shape[0])
@@ -136,59 +130,6 @@ count_5000=0
 count_10000=0
 traintime=0
 testtime=0
-
-dtc= tree.DecisionTreeClassifier(max_depth=20)
-
-kf2= KFold(n_splits=10, shuffle=True)
-normal= []
-#set 5-fold cross validation
-###############################################
-
-for train, test in kf2.split(data[:,0:79], target):
-    train_time = timer()
-    r=dtc.fit(data[train], target1[train])
-    train_time = timer()-train_time
-    test_time = timer()
-    pred = dtc.predict(data[test])
-    test_time = timer()-test_time
-    testtime=testtime+test_time
-    traintime=traintime+train_time
-    #print(pred)
-    #print(target[test])
-    for j in range(0,pred.shape[0]) :
-        if pred[j]==target[test][j] :
-            count_0=count_0+1
-        if abs(pred[j]-target[test][j])<=1000:
-            count_1000=count_1000+1
-        if abs(pred[j]-target[test][j])<=2000:
-            count_2000=count_2000+1
-        if abs(pred[j]-target[test][j])<=5000:
-            count_5000=count_5000+1
-        if abs(pred[j]-target[test][j])<=100000:
-            count_10000=count_10000+1
-#    print("Train elapsed time =", train_time)
-#    print("Test elapsed time =", test_time)
-
-
-#print("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")
-cnf= confusion_matrix(target[test], pred)
-#print(cnf)
-#print predict target and confusion matrix
-###############################################
-
-print("|||||||||||||||||||||||||||")
-print("\n decision tree (pre-pruning depth<20)")
-print("train 時間" ,traintime/10)
-print("test 時間" ,testtime/10)
-print("完全命中=" ,count_0/target.shape[0])
-print("誤差1000以內=" ,count_1000/target.shape[0])
-print("誤差2000以內=" ,count_2000/target.shape[0])
-print("誤差5000以內=" ,count_5000/target.shape[0])
-print("誤差10000以內=" ,count_10000/target.shape[0])
-
-
-#calculate accuracy
-###############################################
 
 
 
