@@ -74,12 +74,7 @@ testtime=0
 
 size=attribute.shape[0]
 #print (size)
-'''
-print(data)
-#print(target.shape[0])
-print(target1)
-print(target2)
-'''
+
 
 dtc= tree.DecisionTreeClassifier(max_depth=10)
 
@@ -172,8 +167,7 @@ for train, test in kf2.split(data[:,0:79], target):
 
 #print("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")
 cnf= confusion_matrix(target[test], pred)
-#print(cnf)
-#print predict target and confusion matrix
+
 ###############################################
 
 print("|||||||||||||||||||||||||||")
